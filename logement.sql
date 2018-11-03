@@ -60,7 +60,7 @@ CREATE TABLE mesure(
 CREATE TABLE facture(
    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
    id_logement INTEGER NOT NULL,
-   type CHAR(100) NOT NULL,
+   type_fact CHAR NOT NULL,
    montant REAL,
    valeur REAL,
    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -92,7 +92,7 @@ INSERT INTO mesure VALUES(2, 1, 30, "2018-10-04 12:12:12"); -- humidité
 INSERT INTO mesure VALUES(3, 1, 21, "2018-10-04 13:12:13");
 
 -- Insertion de quatre factures de : électricité, gaz, eau, internet
-INSERT INTO facture(id_logement, type, montant, valeur) VALUES(0, "e", 85.6, 121);
-INSERT INTO facture(id_logement, type, montant, valeur) VALUES(0, "d", 32.6, 121);
-INSERT INTO facture(id_logement, type, montant, valeur) VALUES(0, "g", 98.6, 132);
-INSERT INTO facture(id_logement, type, montant, valeur) VALUES(0, "i", 40.7, 222);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "e", 85.6, 121);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "d", 32.6, 121);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "g", 98.6, 132);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "i", 40.7, 222);

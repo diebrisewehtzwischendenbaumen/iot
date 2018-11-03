@@ -8,11 +8,10 @@
 #include <netdb.h>
 
 
-//134.157.104.2
-//2012
+//connection on port 2012 for instance
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]){  // arguments: ip port type montant 
 
 	struct sockaddr_in server_ad, client_ad;
 	struct hostent *ip_ad;
