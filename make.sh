@@ -1,5 +1,5 @@
 #!/bin/bash
 
 gcc -c cJSON.c
-gcc -c testJSON.c
-gcc cJSON.o testJSON.o -o test
+gcc -c server.c -lsqlite3 -lcurl
+gcc cJSON.o server.o -o server -lsqlite3 -lcurl

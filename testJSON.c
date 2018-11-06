@@ -19,7 +19,7 @@ void main(){
 	cJSON *json = cJSON_Parse(str);
 
 	char *res = cJSON_Print(json);
-	//printf("JSON\n%s\nJSON\n", res);
+	printf("JSON\n%s\nJSON\n", res);
 
 
 	cJSON *city = cJSON_GetObjectItemCaseSensitive(json, "city");
