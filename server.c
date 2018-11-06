@@ -15,7 +15,9 @@
 int nb_port= 0;
 uint32_t port_tab[100]= {0};
 
-char html[] ="<html>\n\
+
+char html[2500];
+char html_raw[] ="<html>\n\
   <head>\n\
     <script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>\n\
     <script type=\"text/javascript\">\n\
@@ -224,8 +226,10 @@ int main(int argc, char *argv[])
 					printf("montant_tot_i = %.2lf\n", montant_tot_i);
 					printf("montant_tot_g = %.2lf\n", montant_tot_g);
 
-					
-				  	sprintf(html, html, montant_tot_e, montant_tot_w, montant_tot_g, montant_tot_i, montant_tot_d);
+					printf("[HTML-R]\n%s\n[HTML-R]\n", html_raw);
+				  	sprintf(html, html_raw, montant_tot_e, montant_tot_w, montant_tot_g, montant_tot_i, montant_tot_d);
+
+					printf("[HTML]\n%s\n[HTML]\n", html);
 
 					// ecriture de index.html
 				  	FILE *f= fopen("index.html", "w");
