@@ -13,6 +13,9 @@
 #include <curl/curl.h>
 #include "cJSON.h"
 
+
+int canwrite = 1;
+
 struct string {
   char *ptr;
   size_t len;
@@ -273,7 +276,7 @@ int main(int argc, char *argv[])
   //si c'est un fils alors on est un serveur
   else
   {
-		char buffer[256], miniBuffer[10];  //data recue par le client
+		char buffer[1000]; //data recue par le client
 		char type; // type eau electricite dechet
 		float montant;
 
@@ -300,15 +303,17 @@ int main(int argc, char *argv[])
 		{
 			//printf("START LISTENNING PORTNO %d\n", portno);
 			client_socket_fd = accept (sockfd, (struct sockaddr *)&cli_addr, &clilen);
-			//if(client_socket_fd < 0)
-			//	puts("ERROR on accept");
-
+			if(client_socket_fd < 0)
+				puts("ERROR on accept");
 			pid = fork();
 			if(pid == 0)
 			{
+			//while(1){
+			//	client_socket_fd = accept (sockfd, (struct sockaddr *)&cli_addr, &clilen);
+				
 				char method[10], page[20], type_format[3] = "xx\0";
 				// code execute par le fils
-				bzero(buffer,256);
+				bzero(buffer,sizeof(buffer));
 				tmp = read(client_socket_fd,buffer,255);
 
 				char reply[1000];
@@ -319,13 +324,6 @@ int main(int argc, char *argv[])
 				type_format[0] = page[strlen(page) - 2];
 				type_format[1] = page[strlen(page) - 1];
 				printf("type= %s\n", type_format);
-
-				strncpy(miniBuffer, buffer, 3);
-				miniBuffer[3]= '\0';
-				//miniBuffer[1]= '\0';
-				//miniBuffer[2]= '\0';
-				//miniBuffer[3]= '\0';
-				//printf("minimessage : %s\n", miniBuffer);
 
 /*********************************************************************************/
 /*******************************R O U T A G E*************************************/
@@ -345,26 +343,15 @@ int main(int argc, char *argv[])
 					fread(msg, 1, fsize+1, fp);
 					fclose(fp);	
 
-					//putchar('\n');
-					//for(int i=0; i<fsize+1; i++)
-					//	putchar(msg[i]);
-					//putchar('\n');
-
-					//printf("fsize=%ld\n", fsize+1);
-
 					sprintf(reply, reply_raw, fsize);
 
-					//putchar('\n');
-					//for(int i=0; i<strlen(reply); i++)
-					//	putchar(reply[i]);
-					//putchar('\n');
-
-
+					while(canwrite==0);
+					canwrite=0;
 					write(client_socket_fd, reply, strlen(reply));
-
 					send(client_socket_fd, msg, fsize, 0);
-
-
+					canwrite=1;
+					//sleep(1);
+					free(msg);
 				}
 
 				else if(strcmp(method, "GET") == 0 && strcmp(page, "/etats_capteurs") == 0)
@@ -429,15 +416,7 @@ int main(int argc, char *argv[])
 					free(res);
 				}
 
-/*
-
-['2013',  1000,      400],\n\
-          ['2014',  1170,      460],\n\
-          ['2015',  660,       1120],\n\
-          ['2016',  1030,      540]\n\
-
-*/
-				// pour toutes les pages à envoyer pour Bootstrap
+				// pour toutes les pages
 				else if(strcmp(method, "GET") == 0 && strlen(page) > 1)
 				{
 					puts("\n\n***OTHER PAGES***\n\n");
@@ -455,12 +434,6 @@ int main(int argc, char *argv[])
 					fread(msg, 1, fsize, fp);
 					fclose(fp);	
 
-					//putchar('\n');
-					//for(int i=0; i<fsize+1; i++)
-					//	putchar(msg[i]);
-					//putchar('\n');
-					//printf("fsize=%ld\n", fsize+1);
-
 					if(strcmp(type_format, "js") == 0){
 						sprintf(reply, javascript_reply_raw, fsize);
 						puts("REPLY:");
@@ -468,7 +441,6 @@ int main(int argc, char *argv[])
 							putchar(reply[i]);
 						putchar('\n');
 						printf("fsize=%ld\n", fsize+1);}
-
 
 					else if(strcmp(type_format, "ss") == 0) //css
 						sprintf(reply, css_reply_raw, fsize);
@@ -479,8 +451,13 @@ int main(int argc, char *argv[])
 					else
 						sprintf(reply, other_reply_raw, fsize);
 
+					while(canwrite==0);
+					canwrite=0;
 					write(client_socket_fd, reply, strlen(reply));
 					send(client_socket_fd, msg, fsize, 0);
+					canwrite=1;
+					//sleep(1);
+					free(msg);
 				}
 
 				else if(strcmp(method, "GET") == 0 && strlen(page) == 1)
@@ -537,10 +514,7 @@ int main(int argc, char *argv[])
 					printf("montant_tot_i = %.2lf\n", montant_tot_i);
 					printf("montant_tot_g = %.2lf\n", montant_tot_g);
 
-					//printf("[HTML-R]\n%s\n[HTML-R]\n", html_raw);
 				  	sprintf(html, html_raw, montant_tot_e, montant_tot_w, montant_tot_g, montant_tot_i, montant_tot_d);
-
-					//printf("[HTML]\n%s\n[HTML]\n", html);
 
 					// ecriture de index.html
 				  	FILE *f= fopen("index.html", "w");
@@ -558,13 +532,6 @@ int main(int argc, char *argv[])
 					fread(msg, 1, fsize+1, fp);
 					fclose(fp);	
 
-					//putchar('\n');
-					//for(int i=0; i<fsize+1; i++)
-					//	putchar(msg[i]);
-					//putchar('\n');
-
-					//printf("fsize=%ld\n", fsize+1);
-
 					sprintf(reply, reply_raw, fsize+1);
 
 					putchar('\n');
@@ -572,10 +539,10 @@ int main(int argc, char *argv[])
 						putchar(reply[i]);
 					putchar('\n');
 
-
 					write(client_socket_fd, reply, strlen(reply));
 
 					send(client_socket_fd, msg, fsize+1, 0);
+					free(msg);
 
 				}
 				else if(strlen(buffer) != 0)
@@ -595,6 +562,7 @@ int main(int argc, char *argv[])
 
 				sleep(1);
 				exit(0);
+			//}
 			}
 			else // pere
 			{
