@@ -153,45 +153,11 @@ char chart_raw2[] = "\n\
 
 
 
-//char reply[1000]; // c'est temporairement déclaré losqu'un fils naît
+char reply[1000];
 char reply_raw[] =
 "HTTP/1.1 200 OK\r\n\
 Connection: keep-alive\r\n\
 Content-Type: text/html\r\n\
-Content-Length: %ld\r\n\
-\r\n";
-
-char javascript_reply_raw[] =
-"HTTP/1.1 200 OK\r\n\
-Connection: keep-alive\r\n\
-Content-Type: text/javascript\r\n\
-Content-Length: %ld\r\n\
-\r\n";
-
-char css_reply_raw[] =
-"HTTP/1.1 200 OK\r\n\
-Connection: keep-alive\r\n\
-Content-Type: text/css\r\n\
-Content-Length: %ld\r\n\
-\r\n";
-
-char html_reply_raw[] =
-"HTTP/1.1 200 OK\r\n\
-Connection: keep-alive\r\n\
-Content-Type: text/html\r\n\
-Content-Length: %ld\r\n\
-\r\n";
-
-char svg_reply_raw[] =
-"HTTP/1.1 200 OK\r\n\
-Connection: keep-alive\r\n\
-Content-Type: image/svg+xml\r\n\
-Content-Length: %ld\r\n\
-\r\n";
-
-char other_reply_raw[] =
-"HTTP/1.1 200 OK\r\n\
-Connection: keep-alive\r\n\
 Content-Length: %ld\r\n\
 \r\n";
 
@@ -298,95 +264,34 @@ int main(int argc, char *argv[])
 		
 		while(1)
 		{
-			//printf("START LISTENNING PORTNO %d\n", portno);
+			printf("START LISTENNING PORTNO %d\n", portno);
 			client_socket_fd = accept (sockfd, (struct sockaddr *)&cli_addr, &clilen);
-			//if(client_socket_fd < 0)
-			//	puts("ERROR on accept");
+			if(client_socket_fd < 0)
+				puts("ERROR on accept");
 
 			pid = fork();
 			if(pid == 0)
 			{
-				char method[10], page[20], type_format[3] = "xx\0";
 				// code execute par le fils
 				bzero(buffer,256);
 				tmp = read(client_socket_fd,buffer,255);
 
-				char reply[1000];
-				printf("BUFFER : %s\n", buffer);
-
-				sscanf(buffer, "%s %s", method, page);
-				printf("\n\nMETHOD= %s, PAGE= %s\n\n", method, page);
-				type_format[0] = page[strlen(page) - 2];
-				type_format[1] = page[strlen(page) - 1];
-				printf("type= %s\n", type_format);
+				printf("message : %s\n", buffer);
 
 				strncpy(miniBuffer, buffer, 3);
 				miniBuffer[3]= '\0';
 				//miniBuffer[1]= '\0';
 				//miniBuffer[2]= '\0';
 				//miniBuffer[3]= '\0';
-				//printf("minimessage : %s\n", miniBuffer);
+				printf("minimessage : %s\n", miniBuffer);
 
-/*********************************************************************************/
-/*******************************R O U T A G E*************************************/
-
-				if(strcmp(method, "GET") == 0 && strcmp(page, "/consommation") == 0)
+				if(strcmp(miniBuffer, "GET") == 0)
 				{
-					puts("\n\n****CONSOMMATION****\n\n");
-					
-					// lecture de www/consommation.html
-				  	long fsize;
-					FILE *fp = fopen("www/index.html", "r");
-					fseek(fp, 0, SEEK_END);
-					fsize = ftell(fp);
-					//printf("fsize = %ld\n", fsize);
-					rewind(fp);
-					char *msg = (char*)malloc((fsize+1)*sizeof(char));
-					fread(msg, 1, fsize+1, fp);
-					fclose(fp);	
 
-					//putchar('\n');
-					//for(int i=0; i<fsize+1; i++)
-					//	putchar(msg[i]);
-					//putchar('\n');
-
-					//printf("fsize=%ld\n", fsize+1);
-
-					sprintf(reply, reply_raw, fsize);
-
-					//putchar('\n');
-					//for(int i=0; i<strlen(reply); i++)
-					//	putchar(reply[i]);
-					//putchar('\n');
-
-
-					write(client_socket_fd, reply, strlen(reply));
-
-					send(client_socket_fd, msg, fsize, 0);
-
-
-				}
-
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/etats_capteurs") == 0)
-				{
-					puts("\n\n****ETATS_CAPTEURS****\n\n");
-				}
-
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/factures") == 0)
-				{
-					puts("\n\n****FACTURES****\n\n");
-				}
-				
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/configuration") == 0)
-				{
-					puts("\n\n****CONFIGURATION****\n\n");
-				}
-				
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/meteo") == 0)
-				{
-					puts("\n\n****METEO****\n\n");
+					puts("meteo\n");
 
 					char *res= getREST();
+		puts("prout");
 					char buffer[2000]= "";
 					char row[100]= "";
 					char date[20]= "";
@@ -437,53 +342,9 @@ int main(int argc, char *argv[])
           ['2016',  1030,      540]\n\
 
 */
-				// pour toutes les pages à envoyer pour Bootstrap
-				else if(strcmp(method, "GET") == 0 && strlen(page) > 1)
-				{
-					puts("\n\n***OTHER PAGES***\n\n");
-					// lecture de any.any
-				  	long fsize;
-					char path[10000];
-					sprintf(path, "www%s", page);
-					printf("PATH= %s\n", path);
-					FILE *fp = fopen(path, "r");
-					fseek(fp, 0, SEEK_END);
-					fsize = ftell(fp);
-					//printf("fsize = %ld\n", fsize);
-					rewind(fp);
-					char *msg = (char*)malloc((fsize)*sizeof(char));
-					fread(msg, 1, fsize, fp);
-					fclose(fp);	
-
-					//putchar('\n');
-					//for(int i=0; i<fsize+1; i++)
-					//	putchar(msg[i]);
-					//putchar('\n');
-					//printf("fsize=%ld\n", fsize+1);
-
-					if(strcmp(type_format, "js") == 0){
-						sprintf(reply, javascript_reply_raw, fsize);
-						puts("REPLY:");
-						for(int i=0; i<strlen(reply); i++)
-							putchar(reply[i]);
-						putchar('\n');
-						printf("fsize=%ld\n", fsize+1);}
 
 
-					else if(strcmp(type_format, "ss") == 0) //css
-						sprintf(reply, css_reply_raw, fsize);
-					else if(strcmp(type_format, "ml") == 0) //html
-						sprintf(reply, html_reply_raw, fsize);
-					else if(strcmp(type_format, "vg") == 0) //svg
-						sprintf(reply, svg_reply_raw, fsize);
-					else
-						sprintf(reply, other_reply_raw, fsize);
-
-					write(client_socket_fd, reply, strlen(reply));
-					send(client_socket_fd, msg, fsize, 0);
-				}
-
-				else if(strcmp(method, "GET") == 0 && strlen(page) == 1)
+				else if(strcmp(miniBuffer, "GET /graph") == 0)
 				{
 					sprintf(req,"SELECT type_fact, montant FROM facture;");
 					printf("sql=|%s|\n",req);
@@ -537,10 +398,10 @@ int main(int argc, char *argv[])
 					printf("montant_tot_i = %.2lf\n", montant_tot_i);
 					printf("montant_tot_g = %.2lf\n", montant_tot_g);
 
-					//printf("[HTML-R]\n%s\n[HTML-R]\n", html_raw);
+					printf("[HTML-R]\n%s\n[HTML-R]\n", html_raw);
 				  	sprintf(html, html_raw, montant_tot_e, montant_tot_w, montant_tot_g, montant_tot_i, montant_tot_d);
 
-					//printf("[HTML]\n%s\n[HTML]\n", html);
+					printf("[HTML]\n%s\n[HTML]\n", html);
 
 					// ecriture de index.html
 				  	FILE *f= fopen("index.html", "w");
@@ -552,18 +413,18 @@ int main(int argc, char *argv[])
 					FILE *fp = fopen("index.html", "r");
 					fseek(fp, 0, SEEK_END);
 					fsize = ftell(fp);
-					//printf("fsize = %ld\n", fsize);
+					printf("fsize = %ld\n", fsize);
 					rewind(fp);
 					char *msg = (char*)malloc((fsize+1)*sizeof(char));
 					fread(msg, 1, fsize+1, fp);
 					fclose(fp);	
 
-					//putchar('\n');
-					//for(int i=0; i<fsize+1; i++)
-					//	putchar(msg[i]);
-					//putchar('\n');
+					putchar('\n');
+					for(int i=0; i<fsize+1; i++)
+						putchar(msg[i]);
+					putchar('\n');
 
-					//printf("fsize=%ld\n", fsize+1);
+					printf("fsize=%ld\n", fsize+1);
 
 					sprintf(reply, reply_raw, fsize+1);
 
@@ -586,7 +447,7 @@ int main(int argc, char *argv[])
 					printf("Writing : \"type: %c, montant: %.2f\"\n", type, montant);
 
 		  			sprintf(req,"INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, '%c', %.2f, 0);", type, montant);
-		  			//printf("req = %s\n", req);
+		  			printf("req = %s\n", req);
 
 		  			rc = sqlite3_exec(db, req, 0, 0, &err_msg);
 				}
