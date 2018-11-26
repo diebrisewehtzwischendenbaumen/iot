@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>IoT - Dashboard</title>
+    <title>IoT - &Eacute;tat capteurs</title>
 
     <!-- Bootstrap core CSS-->
     <link href="http://blackrockdigital.github.io/startbootstrap-sb-admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -41,13 +41,13 @@
 
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="index.html">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Consommation</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="etat_capteurs.html">
             <i class="fas fa-fw fa-table"></i>
             <span>&Eacute;tat capteurs</span>
@@ -79,13 +79,42 @@
             <li class="breadcrumb-item">
               <a href="#">IoT</a>
             </li>
-            <li class="breadcrumb-item active">Consommation</li>
+            <li class="breadcrumb-item active">&Eacute;tat capteurs</li>
           </ol>
 
           
 
-          <!--------------------------Area Chart--------------------------->
-          %s
+          <!--------------------------Area Chart Example--------------------------->
+
+          <!-- DataTables Example -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-table"></i>
+              Liste des capteurs et actionneurs</div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Identifiant</th>
+                      <th>R&eacute;f&eacute;rence</th>
+                      <th>Type</th>
+                      <th>Id. pi&egrave;ce</th>
+                      <th>Port</th>
+                      <th>&Eacute;tat</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    %s
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer small text-muted"></div>
+          </div>
+
 
         </div>
         <!---------------------------- /.container-fluid ---------------------------->
@@ -112,7 +141,6 @@
       <i class="fas fa-angle-up"></i>
     </a>
 
-   
 
     <!-- Bootstrap core JavaScript-->
     <script src="http://blackrockdigital.github.io/startbootstrap-sb-admin/vendor/jquery/jquery.min.js"></script>
@@ -129,8 +157,15 @@
     <!-- Custom scripts for all pages-->
     <script src="http://blackrockdigital.github.io/startbootstrap-sb-admin/js/sb-admin.min.js"></script>
 
-    <!-- Area chart scripts -->
-    %s
+    <!-- Demo scripts for this page-->
+    <script src="http://blackrockdigital.github.io/startbootstrap-sb-admin/js/demo/datatables-demo.js"></script>
+
+    <script type="text/javascript">
+      // Call the dataTables jQuery plugin
+      $(document).ready(function() {
+        $('#dataTable').DataTable();
+      });
+    </script>
 
   </body>
 

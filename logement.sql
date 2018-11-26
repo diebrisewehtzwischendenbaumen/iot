@@ -34,6 +34,7 @@ CREATE TABLE capteur_actionneur(
    id_type INTEGER,
    ref_commercial CHAR(100) NOT NULL,
    port INTEGER NOT NULL,
+   etat INTEGER NOT NULL,
    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
    FOREIGN KEY(id_piece) REFERENCES piece(id),
    FOREIGN KEY(id_type) REFERENCES type_capteur_actionneur(id)
@@ -79,20 +80,20 @@ INSERT INTO type_capteur_actionneur VALUES(0, "celsius", 0.1, "temperature");
 INSERT INTO type_capteur_actionneur VALUES(1, "volt", 0.1, "tension");
 INSERT INTO type_capteur_actionneur VALUES(2, "pourcent", 5, "humidité");
 INSERT INTO type_capteur_actionneur VALUES(3, "bar", 1, "pression");
-INSERT INTO type_capteur_actionneur VALUES(4, "eau", 0.1, "m3");
-INSERT INTO type_capteur_actionneur VALUES(5, "gaz", 0.1, "m3");
-INSERT INTO type_capteur_actionneur VALUES(6, "internet", 0.1, "megaoctet");
-INSERT INTO type_capteur_actionneur VALUES(7, "dechet", 0.1, "kg");
-INSERT INTO type_capteur_actionneur VALUES(8, "electricite", 1, "W/h");
+INSERT INTO type_capteur_actionneur VALUES(4, "m3", 0.1, "eau");
+INSERT INTO type_capteur_actionneur VALUES(5, "m3", 0.1, "gaz");
+INSERT INTO type_capteur_actionneur VALUES(6, "megaoctet", 0.1, "internet");
+INSERT INTO type_capteur_actionneur VALUES(7, "kg", 0.1, "dechet");
+INSERT INTO type_capteur_actionneur VALUES(8, "W/h", 1, "electricite");
 
 -- Insertion d'un capteur de temperature et un capteur d'humidité dans le salon
-INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(0, 0, 0, "HEZBFLHBDSKU782364", 2012);
-INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(1, 0, 2, "GEZB7656678U782364", 2013);
-INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(2, 0, 1, "JIZB7656153U782364", 2014);
+INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port, etat) VALUES(0, 2, 0, "HEZBFLHBDSKU782364", 2012, 0);
+INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port, etat) VALUES(1, 3, 2, "GEZB7656678U782309", 2013, 0);
+INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port, etat) VALUES(2, 1, 1, "JIZB7656153U782445", 2014, 0);
 
-INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(4, 0, 8, "HEZBFLHfgsrU782364", 2015); -- elec
-INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(5, 0, 4, "GEZB765dggggg82364", 2016); -- eau
-INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(6, 0, 6, "JIZB7656153Urrr364", 2017); -- internet
+INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port, etat) VALUES(4, 0, 8, "HEZBFLHfgsrU782345", 2015, 1); -- elec
+INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port, etat) VALUES(5, 2, 4, "GEZB765FDSRGS823GG", 2016, 1); -- eau
+INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port, etat) VALUES(6, 0, 6, "JIZB7656153URRRTR4", 2017, 1); -- internet
 
 
 

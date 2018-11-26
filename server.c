@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
 /*********************************************************************************/
 /*******************************R O U T A G E*************************************/
 
-				if(strcmp(method, "GET") == 0 && strcmp(page, "/index") == 0)
+				if(strcmp(method, "GET") == 0 && strcmp(page, "/index.html") == 0)
 				{
 					puts("\n\n****INDEX - CONSOMMATION****\n\n");
 					
@@ -566,14 +566,144 @@ int main(int argc, char *argv[])
 				}
 
 
-
-
-
-
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/etats_capteurs") == 0)
+				else if(strcmp(method, "GET") == 0 && strcmp(page, "/etat_capteurs.html") == 0)
 				{
+
 					puts("\n\n****ETATS_CAPTEURS****\n\n");
+
+
+
+					char tmpStr[10000];
+					char replyHTML[10000]= "";
+					char HTML[15000];
+
+
+					char typeStr[100]= "";
+					char pieceStr[100]= "";
+					char etatStr[100]= "";
+
+					char *etat= readFile("www/etat_capteurs.html");
+					char *tableHTML= readFile("www/table.html");
+
+					puts("files loaded\n");
+
+
+	
+
+
+
+					
+
+
+
+
+					sprintf(req,"SELECT * FROM capteur_actionneur;");
+					// préparation de la requête
+					rc=sqlite3_prepare_v2(db, req, -1, &stmt, 0);
+
+
+					while(1)
+					{
+					    // lecture de l'enregistrement suivant
+					    s=sqlite3_step(stmt);
+					    // enregistrement existant
+					    if (s==SQLITE_ROW){
+						
+					      	const int id_cap=sqlite3_column_int(stmt, 0);
+					      	const int id_piece=sqlite3_column_int(stmt, 1);
+					      	const int id_type=sqlite3_column_int(stmt, 2);
+					      	const char *ref=sqlite3_column_text(stmt, 3);
+					      	const int port=sqlite3_column_int(stmt, 4);
+					      	const int etat=sqlite3_column_int(stmt, 5);
+
+
+					      	switch(id_type)
+							{
+							case 0:
+								strcpy(typeStr, "temp&eacute;rature");
+								break;
+							case 1:
+								strcpy(typeStr, "tension");
+								break;
+							case 2:
+								strcpy(typeStr, "humidit&eacute;");
+								break;
+							case 3:
+								strcpy(typeStr, "pression");
+								break;
+							case 4:
+								strcpy(typeStr, "eau");
+								break;
+							case 5:
+								strcpy(typeStr, "gaz");
+								break;
+							case 6:
+								strcpy(typeStr, "internet");
+								break;
+							case 7:
+								strcpy(typeStr, "d&eacute;chet");
+								break;
+							case 8:
+								strcpy(typeStr, "&eacute;lectricit&eacute;");
+								break;
+							}
+
+
+							switch(id_piece)
+							{
+							case 0:
+								strcpy(pieceStr, "salon");
+								break;
+							case 1:
+								strcpy(pieceStr, "chambre");
+								break;
+							case 2:
+								strcpy(pieceStr, "sdb");
+								break;
+							case 3:
+								strcpy(pieceStr, "cuisine");
+								break;
+							}
+					     	
+
+					       	if(etat == 1)
+					       		strcpy(etatStr, "<span style=\"color: green;\">ON</span>");
+					       	else
+					       		strcpy(etatStr, "<span style=\"color: red;\">OFF</span>");
+
+
+					       	sprintf(tmpStr, tableHTML, id_cap, ref, typeStr, pieceStr, port, etatStr);
+					       	strcat(replyHTML, tmpStr);
+
+					   	}
+					    // parcours terminé
+					   	else if (s==SQLITE_DONE)
+					    	break;
+
+				  	}
+
+
+
+
+
+					sprintf(HTML, etat, replyHTML);
+
+
+
+					sprintf(reply, reply_raw, strlen(HTML));
+					write(client_socket_fd, reply, strlen(reply));
+					send(client_socket_fd, HTML, strlen(HTML), 0);
+					
+
+
+					free(etat);
+					free(tableHTML);
+
 				}
+
+
+
+
 
 				else if(strcmp(method, "GET") == 0 && strcmp(page, "/factures") == 0)
 				{
