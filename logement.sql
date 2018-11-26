@@ -94,29 +94,38 @@ INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALU
 INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(5, 0, 4, "GEZB765dggggg82364", 2016); -- eau
 INSERT INTO capteur_actionneur(id, id_piece, id_type, ref_commercial, port) VALUES(6, 0, 6, "JIZB7656153Urrr364", 2017); -- internet
 
+
+
+
 -- Insertion de mesures pour les capteurs précédemment insérés
-INSERT INTO mesure VALUES(0, 0, 21.2, "2018-10-04 12:12:12"); -- température
-INSERT INTO mesure VALUES(1, 0, 23.3, "2018-10-04 13:12:13");
-INSERT INTO mesure VALUES(2, 1, 30, "2018-10-04 12:12:12"); -- humidité
-INSERT INTO mesure VALUES(3, 1, 21, "2018-10-04 13:12:13");
+INSERT INTO mesure VALUES(0, 0, 21.2, "2018-10-04 12:00:00"); -- température
+INSERT INTO mesure VALUES(1, 0, 23.3, "2018-10-04 12:00:00");
+INSERT INTO mesure VALUES(2, 1, 30, "2018-10-04 12:00:00"); -- humidité
+INSERT INTO mesure VALUES(3, 1, 21, "2018-10-04 12:00:00");
 
-INSERT INTO mesure VALUES(4, 4, 30, "2018-10-04 12:12:12"); -- elec
-INSERT INTO mesure VALUES(5, 4, 66, "2018-10-05 13:12:13");
-INSERT INTO mesure VALUES(6, 4, 43, "2018-10-06 13:12:13");
-INSERT INTO mesure VALUES(7, 4, 21, "2018-10-07 13:12:13");
-INSERT INTO mesure VALUES(8, 4, 12, "2018-10-08 13:12:13");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(4, 30, "2018-10-04 12:00:00"); -- elec
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(4, 66, "2018-10-05 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(4, 43, "2018-10-06 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(4, 21, "2018-10-07 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(4, 12, "2018-10-08 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(4, 35, "2018-10-09 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(4, 26, "2018-10-10 12:00:00");
 
-INSERT INTO mesure VALUES(9, 5, 4, "2018-10-04 12:12:12"); -- eau
-INSERT INTO mesure VALUES(10, 5, 2, "2018-10-05 12:12:12");
-INSERT INTO mesure VALUES(11, 5, 7, "2018-10-06 12:12:12");
-INSERT INTO mesure VALUES(12, 5, 11, "2018-10-07 12:12:12");
-INSERT INTO mesure VALUES(13, 5, 8, "2018-10-08 12:12:12");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(5, 4, "2018-10-04 12:00:00"); -- eau
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(5, 2, "2018-10-05 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(5, 7, "2018-10-06 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(5, 11, "2018-10-07 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(5, 8, "2018-10-08 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(5, 14, "2018-10-09 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(5, 3, "2018-10-10 12:00:00");
 
-INSERT INTO mesure VALUES(14, 6, 345, "2018-10-04 12:12:12"); -- internet
-INSERT INTO mesure VALUES(15, 6, 678, "2018-10-05 12:12:12");
-INSERT INTO mesure VALUES(16, 6, 1432, "2018-10-06 12:12:12");
-INSERT INTO mesure VALUES(17, 6, 2988, "2018-10-07 12:12:12");
-INSERT INTO mesure VALUES(18, 6, 756, "2018-10-08 12:12:12");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 345, "2018-10-04 12:00:00"); -- internet
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 678, "2018-10-05 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 1432, "2018-10-06 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 2988, "2018-10-07 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 756, "2018-10-08 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 4765, "2018-10-09 12:00:00");
+INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 3777, "2018-10-10 12:00:00");
 
 -- Insertion de quatre factures de : électricité, gaz, eau, internet
 INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "e", 85.6, 121);

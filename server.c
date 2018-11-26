@@ -340,6 +340,11 @@ int main(int argc, char *argv[])
 					char internetHTML[3000];
 					char replyHTML[10000];
 					char replyJS[10000];
+					char HTML[15000];
+
+					char elecCOLOR[]= "2,217,34";
+					char eauCOLOR[]= "2,117,216";
+					char internetCOLOR[]= "253,23,34";
 
 					char *index= readFile("www/index.html");
 					char *chartHTML= readFile("www/chart.html");
@@ -401,9 +406,11 @@ int main(int argc, char *argv[])
 					printf("labels = %s\n", labelsStr);
 
 
-					sprintf(replyHTML, chartHTML, "chartELEC");
-				  	sprintf(replyJS, chartJS, "chartELEC", labelsStr, valuesStr);
-				  	sprintf(elecHTML, "%s\n\n\n%s", replyHTML, replyJS);
+					sprintf(tmpStr, chartHTML, "&Eacute;lectricit&eacute; (W/h)", "chartELEC");
+				  	strcat(replyHTML, tmpStr);
+				  	sprintf(tmpStr, chartJS, "chartELEC", labelsStr, elecCOLOR, elecCOLOR, elecCOLOR, elecCOLOR, valuesStr, 100);
+				  	strcat(replyJS, tmpStr);
+				  	//sprintf(elecHTML, "\n\n%s\n\n", replyHTML);
 
 				  	printf("%s\n", elecHTML);
 
@@ -464,9 +471,11 @@ int main(int argc, char *argv[])
 					printf("labels = %s\n", labelsStr);
 
 
-					sprintf(replyHTML, chartHTML, "chartEAU");
-				  	sprintf(replyJS, chartJS, "chartEAU", labelsStr, valuesStr);
-				  	sprintf(eauHTML, "%s\n\n\n%s", replyHTML, replyJS);
+					sprintf(tmpStr, chartHTML, "Eau (m3)", "chartEAU");
+				  	strcat(replyHTML, tmpStr);
+				  	sprintf(tmpStr, chartJS, "chartEAU", labelsStr, eauCOLOR, eauCOLOR, eauCOLOR, eauCOLOR, valuesStr, 20);
+				  	strcat(replyJS, tmpStr);
+				  	//sprintf(eauHTML, "%s\n\n\n%s", replyHTML, replyJS);
 
 				  	printf("%s\n", eauHTML);
 
@@ -526,36 +535,40 @@ int main(int argc, char *argv[])
 					printf("labels = %s\n", labelsStr);
 
 
-					sprintf(replyHTML, chartHTML, "chartINTERNET");
-				  	sprintf(replyJS, chartJS, "chartINTERNET", labelsStr, valuesStr);
-				  	sprintf(internetHTML, "%s\n\n\n%s", replyHTML, replyJS);
+					sprintf(tmpStr, chartHTML, "Internet (Mo)", "chartINTERNET");
+				  	strcat(replyHTML, tmpStr);
+				  	sprintf(tmpStr, chartJS, "chartINTERNET", labelsStr, internetCOLOR, internetCOLOR, internetCOLOR, internetCOLOR, valuesStr, 5000);
+				  	strcat(replyJS, tmpStr);
+				  	//sprintf(internetHTML, "%s\n\n\n%s", replyHTML, replyJS);
 
 				  	printf("%s\n", internetHTML);
 
 //------------------------------------/INTERNET-----------------------------------------//
 
 
+				  	//sprintf(tmpStr, "\n\n%s\n\n%s\n\n%s\n\n", elecHTML, eauHTML, internetHTML);
+				  	//sprintf(replyHTML, index, tmpStr);
+
+
+				  	sprintf(HTML, index, replyHTML, replyJS);
 
 
 
-
-
-
-
-					/*sprintf(reply, reply_raw, fsize);
-
-					while(canwrite==0);
-					canwrite=0;
+					sprintf(reply, reply_raw, strlen(HTML));
 					write(client_socket_fd, reply, strlen(reply));
-					send(client_socket_fd, msg, fsize, 0);
-					canwrite=1;
-					//sleep(1);*/
+					send(client_socket_fd, HTML, strlen(HTML), 0);
+					
 
 
 					free(index);
 					free(chartHTML);
 					free(chartJS);
 				}
+
+
+
+
+
 
 				else if(strcmp(method, "GET") == 0 && strcmp(page, "/etats_capteurs") == 0)
 				{
