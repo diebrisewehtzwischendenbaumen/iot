@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>IoT - Factures</title>
+    <title>IoT - Meteo</title>
 
     <!-- Bootstrap core CSS-->
     <link href="http://blackrockdigital.github.io/startbootstrap-sb-admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -41,7 +41,7 @@
 
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="index.html">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Consommation</span>
@@ -53,7 +53,7 @@
             <span>&Eacute;tat capteurs</span>
           </a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="factures.html">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Factures</span></a>
@@ -79,41 +79,13 @@
             <li class="breadcrumb-item">
               <a href="#">IoT</a>
             </li>
-            <li class="breadcrumb-item active">Factures</li>
+            <li class="breadcrumb-item active">Meteo</li>
           </ol>
 
           
 
-          <!--------------------------Area Chart Example--------------------------->
-
-          <!-- DataTables Example -->
-          <div class="card mb-3">
-            <div class="card-header">
-              <i class="fas fa-table"></i>
-              Liste des factures</div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>Logement</th>
-                      <th>Type</th>
-                      <th>Montant</th>
-                      <th>Valeur</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-
-                    %s
-
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="card-footer small text-muted"></div>
-          </div>
-
+          <!--------------------------Area Chart--------------------------->
+          %s
 
         </div>
         <!---------------------------- /.container-fluid ---------------------------->
@@ -140,6 +112,7 @@
       <i class="fas fa-angle-up"></i>
     </a>
 
+   
 
     <!-- Bootstrap core JavaScript-->
     <script src="http://blackrockdigital.github.io/startbootstrap-sb-admin/vendor/jquery/jquery.min.js"></script>
@@ -156,15 +129,8 @@
     <!-- Custom scripts for all pages-->
     <script src="http://blackrockdigital.github.io/startbootstrap-sb-admin/js/sb-admin.min.js"></script>
 
-    <!-- Demo scripts for this page-->
-    <script src="http://blackrockdigital.github.io/startbootstrap-sb-admin/js/demo/datatables-demo.js"></script>
-
-    <script type="text/javascript">
-      // Call the dataTables jQuery plugin
-      $(document).ready(function() {
-        $('#dataTable').DataTable();
-      });
-    </script>
+    <!-- Area chart scripts -->
+    %s
 
   </body>
 

@@ -255,6 +255,10 @@ int main(int argc, char *argv[])
   }
 
 
+
+printf("Pour acceder au site web, entrez l'adresse suivante :\nlocalhost:2012/index.html\n127.0.0.1:2012/index.html\n");
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
   pid_t pid = 0; // for fork
@@ -811,10 +815,53 @@ int main(int argc, char *argv[])
 					free(HTML);
 
 				}
+
+
+
+//------------------------------------METEO------------------------------------//
+
 				
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/meteo") == 0)
+				else if(strcmp(method, "GET") == 0 && strcmp(page, "/meteo.html") == 0)
 				{
 					puts("\n\n****METEO****\n\n");
+
+
+
+
+
+					char tmpStr[10000];
+					char elecHTML[3000];
+					char eauHTML[3000];
+					char internetHTML[3000];
+					char replyHTML[10000];
+					char replyJS[10000];
+					char HTML[15000];
+
+					char elecCOLOR[]= "2,217,34";
+					char eauCOLOR[]= "2,117,216";
+
+					char *meteo= readFile("www/meteo.html");
+					char *chartHTML= readFile("www/chart.html");
+					char *chartJS= readFile("www/js/chart.js");
+
+					puts("files loaded\n");
+
+
+					char values1Str[1000]= "";
+					char values2Str[1000]= "";
+					char labelsStr[1000]= "";
+
+
+
+
+
+
+
+
+
+
+
+
 
 					char *res= getREST();
 					char buffer[2000]= "";
@@ -824,8 +871,8 @@ int main(int argc, char *argv[])
 
 					cJSON *json = cJSON_Parse(res);
 
-					//char *print = cJSON_Print(json);
-					//printf("JSON\n%s\nJSON\n", print);
+
+					int cnt= 0;
 
 					int iter = 0;
 					cJSON *list = cJSON_GetObjectItemCaseSensitive(json, "list");
@@ -839,7 +886,7 @@ int main(int argc, char *argv[])
 						cJSON *wind = cJSON_GetObjectItemCaseSensitive(iteration, "wind");
 						cJSON *speed = cJSON_GetObjectItemCaseSensitive(wind, "speed");
 						cJSON *sys = cJSON_GetObjectItemCaseSensitive(iteration, "sys");
-						cJSON *dt_txt = cJSON_GetObjectItemCaseSensitive(sys, "dt_txt");
+						cJSON *dt_txt = cJSON_GetObjectItemCaseSensitive(iteration, "dt_txt");
 						sscanf(cJSON_Print(dt_txt), "%s %s", date, vide);
 						iter++;
 	
@@ -852,12 +899,106 @@ int main(int argc, char *argv[])
 						strcat(buffer, row);
 						
 						printf("- iteration %d : temp \"%s\" ; pressure \"%s\" ; humidity \"%s\" ; wind speed \"%s\"\n", iter, cJSON_Print(temp), cJSON_Print(pressure), cJSON_Print(humidity), cJSON_Print(speed));
+					
+
+				     	//printf("val = %.2f\n", value);
+				       	//printf("dateTime = %s\n", dateTime);
+
+				       	if(cnt++ == 0)
+				       	{
+				       		sprintf(tmpStr, "%.2f", atof(cJSON_Print(temp)));
+				       		strcat(values1Str, tmpStr);
+
+				       		sprintf(tmpStr, "%.2f", atof(cJSON_Print(humidity)));
+				       		strcat(values2Str, tmpStr);
+
+				       		sprintf(tmpStr, "%s\"", date);
+				       		strcat(labelsStr, tmpStr);
+				       	}
+				       	else
+				       	{
+				       		sprintf(tmpStr, ", %.2f", atof(cJSON_Print(temp)));
+				       		strcat(values1Str, tmpStr);
+
+				       		sprintf(tmpStr, ", %.2f", atof(cJSON_Print(humidity)));
+				       		strcat(values2Str, tmpStr);
+
+				       		sprintf(tmpStr, ", %s\"", date);
+				       		strcat(labelsStr, tmpStr);
+				       	}
+
+
+
 					}
 				
 					printf("\n%s\n", buffer);
 
 					free(res);
+
+
+
+
+
+//------------------------------------TEMPERATURE-----------------------------------------//
+
+
+					
+					printf("values = %s\n", values1Str);
+					printf("values = %s\n", values2Str);
+					printf("labels = %s\n", labelsStr);
+
+
+					sprintf(tmpStr, chartHTML, "Temp&eacute;rature (°C) Paris - FR ", "chartTEMP");
+				  	strcat(replyHTML, tmpStr);
+				  	sprintf(tmpStr, chartJS, "chartTEMP", labelsStr, elecCOLOR, elecCOLOR, elecCOLOR, elecCOLOR, values1Str, 40);
+				  	strcat(replyJS, tmpStr);
+
+
+//------------------------------------/TEMPERATURE-----------------------------------------//
+
+
+
+
+//------------------------------------HUMIDITE-----------------------------------------//
+
+
+
+
+					sprintf(tmpStr, chartHTML, "Humidit&eacute; (%) Paris - FR", "chartHUM");
+				  	strcat(replyHTML, tmpStr);
+				  	sprintf(tmpStr, chartJS, "chartHUM", labelsStr, eauCOLOR, eauCOLOR, eauCOLOR, eauCOLOR, values2Str, 100);
+				  	strcat(replyJS, tmpStr);
+
+
+//------------------------------------/HUMIDITE-----------------------------------------//
+
+
+
+
+				  	sprintf(HTML, meteo, replyHTML, replyJS);
+
+
+
+					sprintf(reply, reply_raw, strlen(HTML));
+					write(client_socket_fd, reply, strlen(reply));
+					send(client_socket_fd, HTML, strlen(HTML), 0);
+					
+
+
+					free(meteo);
+					free(chartHTML);
+					free(chartJS);
 				}
+
+
+
+
+
+
+
+
+
+
 
 				// pour toutes les pages
 				else if(strcmp(method, "GET") == 0 && strlen(page) > 1)
