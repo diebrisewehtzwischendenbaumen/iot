@@ -566,6 +566,16 @@ int main(int argc, char *argv[])
 				}
 
 
+
+
+
+
+
+
+
+/*********************************CAPTEURS*******************************************/				
+
+
 				else if(strcmp(method, "GET") == 0 && strcmp(page, "/etat_capteurs.html") == 0)
 				{
 
@@ -700,6 +710,87 @@ int main(int argc, char *argv[])
 					free(tableHTML);
 
 				}
+
+
+
+
+//-----------------------------FACTURES-----------------------------//
+
+				else if(strcmp(method, "GET") == 0 && strcmp(page, "/factures.html") == 0)
+				{
+					puts("\n\n****FACTURES****\n\n");
+					char *facturesHTML= readFile("www/factures.html");
+					char *row_raw= readFile("www/rowfacture.html");
+
+					char replyHTML[10000];					
+					char rowsHTML[10000]= "";
+					char row[500];	
+
+					char typeStr[100]= "";			
+					
+					sprintf(req,"SELECT * FROM facture;");
+					// préparation de la requête
+					rc=sqlite3_prepare_v2(db, req, -1, &stmt, 0);
+
+
+					while(1)
+					{
+					    // lecture de l'enregistrement suivant
+					    s=sqlite3_step(stmt);
+					    // enregistrement existant
+					    if (s==SQLITE_ROW){
+						
+					      	const int logement=sqlite3_column_int(stmt, 1);
+							const char type=sqlite3_column_text(stmt, 2)[0];
+					      	const float montant=sqlite3_column_double(stmt, 3);
+							const float valeur=sqlite3_column_double(stmt, 4);
+					      	const char *dateTime=sqlite3_column_text(stmt, 5);
+
+
+
+					      	switch(type)
+							{
+							case 'e':
+								strcpy(typeStr, "&eacute;lectricit&eacute;");
+								break;
+							case 'd':
+								strcpy(typeStr, "d&eacute;chet");
+								break;
+							case 'w':
+								strcpy(typeStr, "eau");
+								break;
+							case 'i':
+								strcpy(typeStr, "internet");
+								break;
+							case 'g':
+								strcpy(typeStr, "gaz");
+								break;
+							default:
+								break;
+							}
+
+
+
+							sprintf(row, row_raw, logement, typeStr, montant, valeur, dateTime);
+							strcat(rowsHTML, row);
+					   	}
+					    // parcours terminé
+					   	else if (s==SQLITE_DONE)
+					    	break;
+
+				  	}
+					sprintf(replyHTML, facturesHTML, rowsHTML);
+					sprintf(reply, reply_raw, strlen(replyHTML));
+
+					write(client_socket_fd, reply, strlen(reply));
+					send(client_socket_fd, replyHTML, strlen(replyHTML), 0);
+
+					free(facturesHTML);
+					free(row_raw);
+				}
+				
+
+//------------------------------FIN FACTURES--------------------------------//
 
 
 

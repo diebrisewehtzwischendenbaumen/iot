@@ -132,4 +132,16 @@ INSERT INTO mesure(id_capteur_actionneur, valeur, date) VALUES(6, 3777, "2018-10
 INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "e", 85.6, 121);
 INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "d", 32.6, 121);
 INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "g", 98.6, 132);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "i", 10.7, 222);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "e", 85.6, 121);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "d", 32.6, 121);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "g", 28.6, 112);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "i", 40.7, 222);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "e", 83.6, 301);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "d", 32.6, 121);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "g", 97.6, 232);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "i", 40.7, 232);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "e", 85.6, 191);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "d", 22.6, 121);
+INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "g", 98.6, 122);
 INSERT INTO facture(id_logement, type_fact, montant, valeur) VALUES(0, "i", 40.7, 222);
