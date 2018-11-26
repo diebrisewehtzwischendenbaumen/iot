@@ -205,6 +205,7 @@ double montant_tot_e = 0, montant_tot_w = 0, montant_tot_d = 0, montant_tot_i = 
 
 
 char *getREST();
+char *readFile(char *path);
 
 
 int main(int argc, char *argv[])
@@ -274,6 +275,7 @@ int main(int argc, char *argv[])
   if(pid != 0)
   	while(1);
   //si c'est un fils alors on est un serveur
+
   else
   {
 		char buffer[1000]; //data recue par le client
@@ -328,30 +330,231 @@ int main(int argc, char *argv[])
 /*********************************************************************************/
 /*******************************R O U T A G E*************************************/
 
-				if(strcmp(method, "GET") == 0 && strcmp(page, "/consommation") == 0)
+				if(strcmp(method, "GET") == 0 && strcmp(page, "/index") == 0)
 				{
-					puts("\n\n****CONSOMMATION****\n\n");
+					puts("\n\n****INDEX - CONSOMMATION****\n\n");
 					
-					// lecture de www/consommation.html
-				  	long fsize;
-					FILE *fp = fopen("www/index.html", "r");
-					fseek(fp, 0, SEEK_END);
-					fsize = ftell(fp);
-					//printf("fsize = %ld\n", fsize);
-					rewind(fp);
-					char *msg = (char*)malloc((fsize+1)*sizeof(char));
-					fread(msg, 1, fsize+1, fp);
-					fclose(fp);	
+					char tmpStr[10000];
+					char elecHTML[3000];
+					char eauHTML[3000];
+					char internetHTML[3000];
+					char replyHTML[10000];
+					char replyJS[10000];
 
-					sprintf(reply, reply_raw, fsize);
+					char *index= readFile("www/index.html");
+					char *chartHTML= readFile("www/chart.html");
+					char *chartJS= readFile("www/js/chart.js");
+
+					puts("files loaded\n");
+
+
+					char valuesStr[1000]= "";
+					char labelsStr[1000]= "";
+
+//------------------------------------ELECTRICITE-----------------------------------------//
+
+					sprintf(req,"SELECT * FROM mesure WHERE id_capteur_actionneur= 4;");
+					// préparation de la requête
+					rc=sqlite3_prepare_v2(db, req, -1, &stmt, 0);
+
+					int cnt= 0;
+
+					while(1)
+					{
+					    // lecture de l'enregistrement suivant
+					    s=sqlite3_step(stmt);
+					    // enregistrement existant
+					    if (s==SQLITE_ROW){
+						
+					      	const float value=sqlite3_column_double(stmt, 2);
+					      	const char *dateTime=sqlite3_column_text(stmt, 3);
+
+					     	//printf("val = %.2f\n", value);
+					       	//printf("dateTime = %s\n", dateTime);
+
+					       	if(cnt++ == 0)
+					       	{
+					       		sprintf(tmpStr, "%.2f", value);
+					       		strcat(valuesStr, tmpStr);
+
+					       		sprintf(tmpStr, "\"%s\"", dateTime);
+					       		strcat(labelsStr, tmpStr);
+					       	}
+					       	else
+					       	{
+					       		sprintf(tmpStr, ", %.2f", value);
+					       		strcat(valuesStr, tmpStr);
+
+					       		sprintf(tmpStr, ", \"%s\"", dateTime);
+					       		strcat(labelsStr, tmpStr);
+					       	}
+					       	
+
+					   	}
+					    // parcours terminé
+					   	else if (s==SQLITE_DONE)
+					    	break;
+
+				  	}
+					
+					printf("values = %s\n", valuesStr);
+					printf("labels = %s\n", labelsStr);
+
+
+					sprintf(replyHTML, chartHTML, "chartELEC");
+				  	sprintf(replyJS, chartJS, "chartELEC", labelsStr, valuesStr);
+				  	sprintf(elecHTML, "%s\n\n\n%s", replyHTML, replyJS);
+
+				  	printf("%s\n", elecHTML);
+
+//------------------------------------/ELECTRICITE-----------------------------------------//
+
+
+
+
+//------------------------------------EAU-----------------------------------------//
+
+					sprintf(req,"SELECT * FROM mesure WHERE id_capteur_actionneur= 5;");
+					// préparation de la requête
+					rc=sqlite3_prepare_v2(db, req, -1, &stmt, 0);
+
+					cnt= 0;
+					strcpy(valuesStr, "");
+					strcpy(labelsStr, "");
+
+					while(1)
+					{
+					    // lecture de l'enregistrement suivant
+					    s=sqlite3_step(stmt);
+					    // enregistrement existant
+					    if (s==SQLITE_ROW){
+						
+					      	const float value=sqlite3_column_double(stmt, 2);
+					      	const char *dateTime=sqlite3_column_text(stmt, 3);
+
+					     	//printf("val = %.2f\n", value);
+					       	//printf("dateTime = %s\n", dateTime);
+
+					       	if(cnt++ == 0)
+					       	{
+					       		sprintf(tmpStr, "%.2f", value);
+					       		strcat(valuesStr, tmpStr);
+
+					       		sprintf(tmpStr, "\"%s\"", dateTime);
+					       		strcat(labelsStr, tmpStr);
+					       	}
+					       	else
+					       	{
+					       		sprintf(tmpStr, ", %.2f", value);
+					       		strcat(valuesStr, tmpStr);
+
+					       		sprintf(tmpStr, ", \"%s\"", dateTime);
+					       		strcat(labelsStr, tmpStr);
+					       	}
+					       	
+
+					   	}
+					    // parcours terminé
+					   	else if (s==SQLITE_DONE)
+					    	break;
+
+				  	}
+					
+					printf("values = %s\n", valuesStr);
+					printf("labels = %s\n", labelsStr);
+
+
+					sprintf(replyHTML, chartHTML, "chartEAU");
+				  	sprintf(replyJS, chartJS, "chartEAU", labelsStr, valuesStr);
+				  	sprintf(eauHTML, "%s\n\n\n%s", replyHTML, replyJS);
+
+				  	printf("%s\n", eauHTML);
+
+//------------------------------------/EAU-----------------------------------------//
+
+
+
+//------------------------------------INTERNET-----------------------------------------//
+
+					sprintf(req,"SELECT * FROM mesure WHERE id_capteur_actionneur= 6;");
+					// préparation de la requête
+					rc=sqlite3_prepare_v2(db, req, -1, &stmt, 0);
+
+					cnt= 0;
+					strcpy(valuesStr, "");
+					strcpy(labelsStr, "");
+
+					while(1)
+					{
+					    // lecture de l'enregistrement suivant
+					    s=sqlite3_step(stmt);
+					    // enregistrement existant
+					    if (s==SQLITE_ROW){
+						
+					      	const float value=sqlite3_column_double(stmt, 2);
+					      	const char *dateTime=sqlite3_column_text(stmt, 3);
+
+					     	//printf("val = %.2f\n", value);
+					       	//printf("dateTime = %s\n", dateTime);
+
+					       	if(cnt++ == 0)
+					       	{
+					       		sprintf(tmpStr, "%.2f", value);
+					       		strcat(valuesStr, tmpStr);
+
+					       		sprintf(tmpStr, "\"%s\"", dateTime);
+					       		strcat(labelsStr, tmpStr);
+					       	}
+					       	else
+					       	{
+					       		sprintf(tmpStr, ", %.2f", value);
+					       		strcat(valuesStr, tmpStr);
+
+					       		sprintf(tmpStr, ", \"%s\"", dateTime);
+					       		strcat(labelsStr, tmpStr);
+					       	}
+					       	
+
+					   	}
+					    // parcours terminé
+					   	else if (s==SQLITE_DONE)
+					    	break;
+
+				  	}
+					
+					printf("values = %s\n", valuesStr);
+					printf("labels = %s\n", labelsStr);
+
+
+					sprintf(replyHTML, chartHTML, "chartINTERNET");
+				  	sprintf(replyJS, chartJS, "chartINTERNET", labelsStr, valuesStr);
+				  	sprintf(internetHTML, "%s\n\n\n%s", replyHTML, replyJS);
+
+				  	printf("%s\n", internetHTML);
+
+//------------------------------------/INTERNET-----------------------------------------//
+
+
+
+
+
+
+
+
+
+					/*sprintf(reply, reply_raw, fsize);
 
 					while(canwrite==0);
 					canwrite=0;
 					write(client_socket_fd, reply, strlen(reply));
 					send(client_socket_fd, msg, fsize, 0);
 					canwrite=1;
-					//sleep(1);
-					free(msg);
+					//sleep(1);*/
+
+
+					free(index);
+					free(chartHTML);
+					free(chartJS);
 				}
 
 				else if(strcmp(method, "GET") == 0 && strcmp(page, "/etats_capteurs") == 0)
@@ -602,6 +805,24 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
   s->len = new_len;
 
   return size*nmemb;
+}
+
+
+char *readFile(char *path)
+{
+	// lecture de www/index.html
+  	long fsize;
+	FILE *fp = fopen(path, "r");
+	fseek(fp, 0, SEEK_END);
+	fsize = ftell(fp);
+	printf("fsize = %ld\n", fsize);
+	rewind(fp);
+
+	char *msg = (char*)malloc((fsize+1)*sizeof(char));
+	fread(msg, 1, fsize+1, fp);
+	fclose(fp);
+
+	return msg;
 }
 
 
