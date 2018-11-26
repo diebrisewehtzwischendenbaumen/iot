@@ -796,14 +796,20 @@ int main(int argc, char *argv[])
 
 
 
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/factures") == 0)
-				{
-					puts("\n\n****FACTURES****\n\n");
-				}
+
 				
-				else if(strcmp(method, "GET") == 0 && strcmp(page, "/configuration") == 0)
+				else if(strcmp(method, "GET") == 0 && strcmp(page, "/configuration.html") == 0)
 				{
 					puts("\n\n****CONFIGURATION****\n\n");
+
+					char *HTML= readFile("www/configuration.html");
+
+					sprintf(reply, reply_raw, strlen(HTML));
+					write(client_socket_fd, reply, strlen(reply));
+					send(client_socket_fd, HTML, strlen(HTML), 0);
+
+					free(HTML);
+
 				}
 				
 				else if(strcmp(method, "GET") == 0 && strcmp(page, "/meteo") == 0)
